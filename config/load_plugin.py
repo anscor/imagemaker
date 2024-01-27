@@ -16,7 +16,6 @@ PLUGINS_CONFIG_FILE = os.path.join(PLUGINS_CONFIG_PATH, "config.yaml")
 
 skips = set()
 
-
 class Plugin:
     def __init__(self, name: str, data: dict) -> None:
         # 插件名称
@@ -92,10 +91,7 @@ if __name__ == "__main__":
         skips.add(plugin)
         if os.path.exists(os.path.join(CUSTOM_PATH, plugin)):
             continue
-        os.system(
-            "ln -s %s %s"
-            % (os.path.abspath(plugin), os.path.join(CUSTOM_PATH, plugin))
-        )
+        os.system("cp -r %s %s" % (os.path.abspath(plugin), CUSTOM_PATH))
 
     # 读取配置文件并解析
     f = codecs.open(PLUGINS_CONFIG_FILE, "r", "utf-8")
