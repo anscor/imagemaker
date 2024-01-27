@@ -1,0 +1,5 @@
+plugins:
+    miao-plugin:
+        order: 1
+        url: "https://gitee.com/yoimiya-kokomi/miao-plugin.git"
+        depth: 1
