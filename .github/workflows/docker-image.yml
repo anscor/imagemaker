@@ -13,6 +13,11 @@ on:
                     - info
                     - warning
                     - debug
+            repo:
+                description: "bot repository url"
+                required: false
+                default: https://gitee.com/yoimiya-kokomi/Miao-Yunzai.git
+                type: string
     push:
         branches:
             - "docker/**"
@@ -46,6 +51,8 @@ jobs:
               with:
                   platforms: linux/amd64
                   push: true
+                  build-args: |
+                      REPO_URL: ${{ inputs.repo }}
                   tags: |
                       ${{ steps.name.outputs.name }}:${{ steps.date.outputs.today }}
                       ${{ steps.name.outputs.name }}:latest

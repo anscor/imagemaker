@@ -13,19 +13,19 @@ RUN dos2unix /res/entrypoint.sh \
 
 FROM node:lts-bullseye-slim AS runtime
 
-ARG BUNDLE_FFMPEG true
-ARG BUNDLE_POETRY true
-ARG USE_APT_MIRROR true
-ARG USE_NPM_MIRROR true
-ARG USE_PYPI_MIRROR true
-ARG REPO_URL https://gitee.com/yoimiya-kokomi/Miao-Yunzai.git
-ARG REPO_BRANCH master
+ARG BUNDLE_FFMPEG=true
+ARG BUNDLE_POETRY=true
+ARG USE_APT_MIRROR=true
+ARG USE_NPM_MIRROR=true
+ARG USE_PYPI_MIRROR=true
+ARG REPO_URL=https://gitee.com/yoimiya-kokomi/Miao-Yunzai.git
+ARG REPO_BRANCH=master
 
-RUN export BUNDLE_FFMPEG=${BUNDLE_FFMPEG:-true} \
-    && export BUNDLE_POETRY=${BUNDLE_POETRY:-true} \
-    && export USE_APT_MIRROR=${USE_APT_MIRROR:-true} \
-    && export USE_NPM_MIRROR=${USE_NPM_MIRROR:-true} \
-    && export USE_PYPI_MIRROR=${USE_PYPI_MIRROR:-true} \
+RUN export BUNDLE_FFMPEG=${BUNDLE_FFMPEG} \
+    && export BUNDLE_POETRY=${BUNDLE_POETRY} \
+    && export USE_APT_MIRROR=${USE_APT_MIRROR} \
+    && export USE_NPM_MIRROR=${USE_NPM_MIRROR} \
+    && export USE_PYPI_MIRROR=${USE_PYPI_MIRROR} \
     \
     && ((test "$USE_APT_MIRROR"x = "true"x \
     && sed -i "s/deb.debian.org/mirrors.ustc.edu.cn/g" /etc/apt/sources.list) || true) \
@@ -81,9 +81,9 @@ FROM runtime AS prod
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
     PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 
-RUN REPO_URL=${REPO_URL:-"https://gitee.com/yoimiya-kokomi/Miao-Yunzai.git"} \
-    && REPO_BRANCH=${REPO_BRANCH:-master} \
-    && USE_NPM_MIRROR=${USE_NPM_MIRROR:-true} \
+RUN REPO_URL=${REPO_URL} \
+    && REPO_BRANCH=${REPO_BRANCH} \
+    && USE_NPM_MIRROR=${USE_NPM_MIRROR} \
     \
     && _NPM_MIRROR_FLAG="" \
     && if [ "$USE_NPM_MIRROR"x = "true"x ]; then _NPM_MIRROR_FLAG="--registry=https://registry.npmmirror.com"; fi \
@@ -91,7 +91,7 @@ RUN REPO_URL=${REPO_URL:-"https://gitee.com/yoimiya-kokomi/Miao-Yunzai.git"} \
     && cd /app/Miao-Yunzai \
     && sed -i 's/127.0.0.1/redis/g' ./config/default_config/redis.yaml \
     && pnpm install -P $_NPM_MIRROR_FLAG \
-    && git remote set-url origin https://gitee.com/yoimiya-kokomi/Miao-Yunzai.git
+    && git remote set-url origin ${REPO_URL}
 
 COPY --from=resource /res/entrypoint.sh /app/Miao-Yunzai/entrypoint.sh
 COPY --from=resource /res/default_plugins /app/Miao-Yunzai/config/default_plugins
