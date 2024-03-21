@@ -52,7 +52,7 @@ jobs:
                   platforms: linux/amd64
                   push: true
                   build-args: |
-                      REPO_URL: ${{ inputs.repo }}
+                      REPO_URL="${{ inputs.repo }}"
                   tags: |
                       ${{ steps.name.outputs.name }}:${{ steps.date.outputs.today }}
                       ${{ steps.name.outputs.name }}:latest
