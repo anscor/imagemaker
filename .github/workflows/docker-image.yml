@@ -40,10 +40,6 @@ jobs:
               id: name
               run: echo 'name=${{ github.ref_name }}' | awk '{sub(/docker/, "anscor"); print $0}' >> $GITHUB_OUTPUT
 
-            - name: Echo inputs
-              id: input
-              run: echo "${{ github.event.inputs.repo }}"
-
             - name: Login to DockerHub
               uses: docker/login-action@v3
               with:
@@ -56,7 +52,7 @@ jobs:
                   platforms: linux/amd64
                   push: true
                   build-args: |
-                      REPO_URL="${{ github.event.inputs.repo }}"
+                      REPO_URL=${{ github.event.inputs.repo }}
                   tags: |
                       ${{ steps.name.outputs.name }}:${{ steps.date.outputs.today }}
                       ${{ steps.name.outputs.name }}:latest
